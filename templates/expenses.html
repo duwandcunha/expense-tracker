@@ -1,0 +1,87 @@
+
+{% extends 'base.html' %}
+
+{% block title %}My Expenses - Expense Tracker{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2>My Expenses</h2>
+    <a href="{{ url_for('add_expense') }}" class="btn">+ Add Expense</a>
+</div>
+
+<div class="card">
+
+    <form method="GET" action="{{ url_for('expenses') }}"
+          style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+
+        <input type="text"
+               name="search"
+               placeholder="Search expenses..."
+               value="{{ search }}"
+               style="flex: 1; min-width: 150px;">
+
+        <select name="category" style="min-width: 130px;">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}"
+                    {% if selected_category == cat %}selected{% endif %}>
+                    {{ cat }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn">Search</button>
+
+        <a href="{{ url_for('expenses') }}" class="btn">Clear</a>
+
+    </form>
+
+    {% if expenses %}
+
+        {% for expense in expenses %}
+
+        <div class="expense-row">
+            <div>
+                <span class="badge">{{ expense.category }}</span>
+                <strong style="margin-left: 0.5rem;">{{ expense.description | upper }}</strong>
+                <br>
+                <small style="color: #888;">{{ expense.date }}</small>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <span class="amount">₹{{ expense.amount | round(2) }}</span>
+
+                <a href="{{ url_for('expense_detail', expense_id=expense.id) }}" class="btn">
+                    View
+                </a>
+
+                <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="btn">
+                    Edit
+                </a>
+
+                <form method="POST"
+                      action="{{ url_for('delete_expense', expense_id=expense.id) }}"
+                      style="display:inline;">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Delete this expense?')">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p style="color: #888; text-align: center; padding: 2rem;">
+            No matching expenses found.
+            <a href="{{ url_for('add_expense') }}">Add a new expense!</a>
+        </p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
