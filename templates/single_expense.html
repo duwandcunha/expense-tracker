@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Expense Detail - Expense Tracker{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 480px; margin: auto;">
+    <h2>Expense Detail</h2>
+    <br>
+    <p><strong>Description:</strong>{{ expense.description }}</p>
+    <p><strong>Amount:</strong>{{ expense.amount }}</p>
+    <p><strong>Category:</strong>{{ expense.category }}</p>
+    <p><strong>Date:</strong>{{ expense.date.strftime('%d-%m-%Y') }}</p>
+    <br>
+    <a href="{{ url_for('expenses') }}" class="btn">← Back</a>
+
+    <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="btn">
+    Edit
+    </a>
+
+    <form method="POST"
+          action="{{ url_for('delete_expense', expense_id=expense.id) }}"
+          style="display:inline;">
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Delete this expense?')">
+            Delete
+        </button>
+    </form>
+</div>
+{% endblock %}
