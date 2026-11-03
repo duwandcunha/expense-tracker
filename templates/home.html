@@ -1,0 +1,86 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Welcome - Expense Tracker{% endblock %}
+
+{% block content %}
+
+<div class="welcome-layout">
+
+    <!-- Left branding panel -->
+
+    <section class="welcome-left">
+
+        <div class="welcome-brand">
+            <span class="brand-leaf">❧</span>
+            <h1>Expense Tracker</h1>
+            <p>Track your spending. Build better habits.</p>
+        </div>
+
+        <div class="welcome-features">
+            <span>✦ Simple</span>
+            <span>✦ Secure</span>
+            <span>✦ Always with you</span>
+        </div>
+
+        <div class="welcome-bottom">
+            <p>Small steps today,</p>
+            <p>make big changes.</p>
+        </div>
+
+        <div class="botanical-decoration botanical-one">❧</div>
+        <div class="botanical-decoration botanical-two">❧</div>
+
+    </section>
+
+    <!-- Right welcome panel -->
+
+    <section class="welcome-right">
+
+        <div class="welcome-card">
+
+            <span class="welcome-card-star">✦</span>
+
+            <h2>Welcome to Expense Tracker</h2>
+
+            <p class="welcome-subtitle">
+                Your money, your goals, your control.
+            </p>
+
+            {% if session.get('user_id') %}
+
+                <p class="welcome-description">
+                    You're all set. Let's take a look at your finances.
+                </p>
+
+                <a href="{{ url_for('dashboard') }}" class="welcome-primary">
+                    Go to Dashboard
+                </a>
+
+            {% else %}
+
+                <p class="welcome-description">
+                    Take charge of your spending and build better
+                    financial habits, one day at a time.
+                </p>
+
+                <a href="{{ url_for('register') }}" class="welcome-primary">
+                    Get Started
+                </a>
+
+                <p class="welcome-login">
+                    Already have an account?
+                    <a href="{{ url_for('login') }}">Login</a>
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="welcome-corner-decoration">✦</div>
+
+    </section>
+
+</div>
+
+{% endblock %}
