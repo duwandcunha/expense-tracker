@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Expense Tracker{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    {% if session.get('user_id') %}
+
+    <!-- Logged-in layout -->
+
+    <div class="app-shell">
+
+        <aside class="sidebar">
+
+            <a href="{{ url_for('dashboard') }}" class="brand">
+                ✦ Expense Tracker
+            </a>
+
+            <div class="sidebar-links">
+                <a href="{{ url_for('dashboard') }}">⌂ Dashboard</a>
+                <a href="{{ url_for('add_expense') }}">＋ Add Expense</a>
+                <a href="{{ url_for('expenses') }}">☷ My Expenses</a>
+                <a href="{{ url_for('logout') }}">⇥ Logout</a>
+            </div>
+
+            <div class="sidebar-footer">
+                Better spending.<br>
+                Brighter tomorrows.
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+
+    {% else %}
+
+    <!-- Logged-out layout -->
+
+        <main class="auth-content">
+
+    {% endif %}
+
+            <!-- Flash messages -->
+
+            {% with messages = get_flashed_messages(with_categories=True) %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+            <!-- Page content -->
+
+            {% block content %}{% endblock %}
+
+        </main>
+
+    {% if session.get('user_id') %}
+    </div>
+    {% endif %}
+
+    <!-- Automatically dismiss flash messages -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const alerts = document.querySelectorAll(".alert");
+
+            alerts.forEach(function (alert) {
+
+                setTimeout(function () {
+
+                    alert.style.opacity = "0";
+
+                    setTimeout(function () {
+                        alert.remove();
+                    }, 500);
+
+                }, 2000);
+
+            });
+
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>
