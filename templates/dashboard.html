@@ -1,0 +1,207 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Expense Tracker{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-header">
+    <div>
+        <h1>Good evening!</h1>
+        <p>Here's a quick look at your spending.</p>
+    </div>
+
+    <a href="{{ url_for('add_expense') }}" class="btn">
+        + Add Expense
+    </a>
+</div>
+
+<!-- Summary Cards -->
+
+<div class="summary-grid">
+
+    <div class="summary-card">
+        <p>Total Expenses</p>
+        <h3>₹{{ total | round(2) }}</h3>
+        <small>Overall spending</small>
+    </div>
+
+    <div class="summary-card">
+        <p>This Month</p>
+        <h3>₹{{ current_month_total | round(2) }}</h3>
+        <small>Current monthly spending</small>
+    </div>
+
+    <div class="summary-card">
+        <p>Transactions</p>
+        <h3>{{ count }}</h3>
+        <small>Total recorded expenses</small>
+    </div>
+
+    <div class="summary-card">
+        <p>Categories</p>
+        <h3>{{ categories }}</h3>
+        <small>Categories used</small>
+    </div>
+
+</div>
+
+<!-- Donut Chart and Recent Expenses -->
+
+<div class="dashboard-grid">
+
+    <div class="card">
+        <h3>Spending by Category</h3>
+        <p class="section-subtitle">Understand where your money goes.</p>
+
+        {% if spend_by_cat %}
+
+        <div class="category-chart-layout">
+
+            <div class="donut-chart"
+                 style="background: conic-gradient({{ chart_gradient }});">
+
+                <div class="donut-hole">
+                    <strong>₹{{ total | round(0) }}</strong>
+                    <small>Total</small>
+                </div>
+
+            </div>
+
+            <div class="category-legend">
+
+                {% for category, details in spend_by_cat.items() %}
+
+                <div class="legend-item">
+                    <span class="legend-dot"
+                          style="background: {{ details.color }};">
+                    </span>
+
+                    <span>{{ category }}</span>
+
+                    <strong>{{ details.percentage | round(1) }}%</strong>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <p>No expenses yet!</p>
+        <a href="{{ url_for('add_expense') }}">Add your first expense</a>
+
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="section-heading">
+            <div>
+                <h3>Recent Expenses</h3>
+                <p class="section-subtitle">Your latest transactions.</p>
+            </div>
+
+            <a href="{{ url_for('expenses') }}">View all →</a>
+        </div>
+
+        {% if recent_expenses %}
+
+            {% for expense in recent_expenses %}
+
+            <div class="recent-expense">
+
+                <div class="recent-expense-info">
+                    <strong>{{ expense.description }}</strong>
+                    <small>{{ expense.category }}</small>
+                </div>
+
+                <div class="recent-expense-amount">
+                    <strong>₹{{ expense.amount | round(2) }}</strong>
+                    <small>{{ expense.date.strftime("%d %b %Y") }}</small>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No expenses recorded yet.</p>
+
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Monthly Expense Summary -->
+
+<div class="card">
+    <h3>Monthly Expense Summary</h3>
+    <p class="section-subtitle">Your spending over time.</p>
+
+    {% if monthly_expenses %}
+
+        {% for month, amount in monthly_expenses.items() %}
+
+        <div class="monthly-item">
+            <span>{{ month }}</span>
+            <strong>₹{{ amount | round(2) }}</strong>
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No monthly expenses available yet.</p>
+
+    {% endif %}
+</div>
+
+<!-- Monthly Comparison -->
+
+<div class="card comparison-card">
+
+    <h3>Monthly Spending Comparison</h3>
+    <p class="section-subtitle">Compare your spending with last month.</p>
+
+    <div class="comparison-details">
+
+        <div>
+            <span>This Month</span>
+            <h3>₹{{ current_month_total | round(2) }}</h3>
+        </div>
+
+        <div>
+            <span>Previous Month</span>
+            <h3>₹{{ previous_month_total | round(2) }}</h3>
+        </div>
+
+    </div>
+
+    <div class="comparison-result">
+
+        {% if difference > 0 %}
+
+            <p class="spending-increased">
+                Spending increased by ₹{{ difference | round(2) }}
+            </p>
+
+        {% elif difference < 0 %}
+
+            <p class="spending-decreased">
+                Spending decreased by ₹{{ (difference * -1) | round(2) }}
+            </p>
+
+        {% else %}
+
+            <p>Your spending remained the same.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
